@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Marquee from "react-fast-marquee"
 
 const marqueeTexts = [
@@ -26,13 +27,25 @@ const marqueeTexts = [
 ]
 
 export function MarqueeBanner() {
+  const [currentTexts, setCurrentTexts] = useState(marqueeTexts.slice(0, 5))
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTexts((prev) => {
+        const startIndex = Math.floor(Math.random() * (marqueeTexts.length - 5))
+        return marqueeTexts.slice(startIndex, startIndex + 5)
+      })
+    }, 8000) // Change texts every 8 seconds
+
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="w-full bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 dark:from-green-600 dark:via-blue-600 dark:to-purple-600 py-3 overflow-hidden relative">
       <div className="absolute inset-0 bg-black/10 dark:bg-black/20"></div>
       <div className="relative">
         <Marquee speed={50} gradient={false} pauseOnHover={true} className="text-white font-bold text-sm sm:text-base">
-          {marqueeTexts.map((text, index) => (
+          {currentTexts.map((text, index) => (
             <span key={`${text}-${index}`} className="mx-8 whitespace-nowrap">
               {text}
             </span>
